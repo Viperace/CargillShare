@@ -7,12 +7,14 @@ import openai
 import pytz
 tz = pytz.timezone('Asia/Hong_Kong')
 
-openai.organization = "org-CZ3SLwuVO3gHVVngRow4srBd"
-openai.api_key = "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"
+openai.organization = "org-uRwBggaViDJ0vXBn0862jtC0"#org-CZ3SLwuVO3gHVVngRow4srBd
+openai.api_key = "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" #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" #
 openai.Model.list()
 
 import datetime as dt_
-ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+#ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+db_path = 'C:/Users/x994664/OneDrive - Cargill Inc/Documents/FlashNewsSQL.db'
+ssql = sqlite3.connect(db_path)
 db_mysteel = pd.read_sql('SELECT * FROM MySteel_FlashNews', con = ssql)
 ssql.close()
 db_mysteel
@@ -69,7 +71,7 @@ for i in range(0, int(content.shape[0]/10)):
         time_text.append(n + 10*i)
         
         try:
-            prompt_text.append(instruction_text + '\n\n' + news_text + '。')
+            prompt_text.append(instruction_text + '\n\n' + news_text + '。.')
         except:
             if np.isnan(news_text):
                 prompt_text.append('Pls return Not News')
@@ -89,7 +91,7 @@ for i in range(0, int(content.shape[0]/10)):
                 txt2 = txt2.split('<br/>')
                 result_ = None
                 for txt in txt2:
-                    result_sub =  GetSentiment_v1_batching([instruction_text + '\n\n' + txt])
+                    result_sub =  GetSentiment_v1_batching([instruction_text + '\n\n' + txt + '。.'])
                     if result_ == None:
                         result_ = result_sub
                     else:
@@ -107,13 +109,13 @@ for i in range(0, int(content.shape[0]/10)):
     gpt_pos.name = "GPT_Signal"
     content.loc[result.index,'GPT_Signal'] = gpt_pos
     try:
-        ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+        ssql = sqlite3.connect(db_path)
         content.loc[result.index,].to_sql('MySteel_FlashNews', con = ssql, 
                                           if_exists='append', index=False, method = None)
         ssql.close()
     except:
         time.sleep(2)
-        ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+        ssql = sqlite3.connect(db_path)
         content.loc[result.index,].to_sql('MySteel_FlashNews', con = ssql, 
                                           if_exists='append', index=False, method = None)
         ssql.close()
@@ -133,7 +135,7 @@ if (content.shape[0]%10) != 0:
         news_text = content.flashNewsContent.iloc[nn]
         time_text.append(nn)
         try:
-            prompt_text.append(instruction_text + '\n\n' + news_text + '。')
+            prompt_text.append(instruction_text + '\n\n' + news_text + '。.')
         except:
             if np.isnan(news_text):
                 prompt_text.append('Pls return Not News')
@@ -153,7 +155,7 @@ if (content.shape[0]%10) != 0:
                 txt2 = txt2.split('<br/>')
                 result_ = None
                 for txt in txt2:
-                    result_sub =  GetSentiment_v1_batching([instruction_text + '\n\n' + txt])
+                    result_sub =  GetSentiment_v1_batching([instruction_text + '\n\n' + txt + '。.'])
                     if result_ == None:
                         result_ = result_sub
                     else:
@@ -171,17 +173,20 @@ if (content.shape[0]%10) != 0:
     gpt_pos.name = "GPT_Signal"
     content.loc[result.index,'GPT_Signal'] = gpt_pos
     try:
-        ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+        ssql = sqlite3.connect(db_path)
         content.loc[result.index,].to_sql('MySteel_FlashNews', con = ssql, 
                                           if_exists='append', index=False, method = None)
         ssql.close()
     except:
         time.sleep(2)
-        ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+        ssql = sqlite3.connect(db_path)
         content.loc[result.index,].to_sql('MySteel_FlashNews', con = ssql, 
                                           if_exists='append', index=False, method = None)
         ssql.close()
     time.sleep(3)
-with open('/home/quantcargillmetals/mysteel_gpt_log','a+') as log_f:
-    print(f"*** [{dt_.datetime.now(tz)}] mysteel gpt comment added ***")
-    log_f.writelines([f"*** [{dt_.datetime.now(tz)}] mysteel gpt comment added ***\n"])
+#with open('/home/quantcargillmetals/mysteel_gpt_log','a+') as log_f:
+#    print(f"*** [{dt_.datetime.now(tz)}] mysteel gpt comment added ***")
+#    log_f.writelines([f"*** [{dt_.datetime.now(tz)}] mysteel gpt comment added ***\n"])
+
+
+
