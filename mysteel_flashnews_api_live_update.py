@@ -85,10 +85,13 @@ new_df.rename(columns = {"flashNewsPublishTime":"datetime"}, inplace = True)
 new_df = new_df[["datetime", "flashNewsCategoryName", "flashNewsId",
                  "flashNewsContent", "flashNewsColumnName"]]
 
-with open('/home/quantcargillmetals/mysteel_api_log','a+') as log_f:
- print(f"*** [{datetime.datetime.now(tz)}] write to mysteel flashnews db ***")
- log_f.writelines([f"*** [{datetime.datetime.now(tz)}] write to mysteel flashnews db ***\n"])
-ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+#with open('/home/quantcargillmetals/mysteel_api_log','a+') as log_f:
+# print(f"*** [{datetime.datetime.now(tz)}] write to mysteel flashnews db ***")
+# log_f.writelines([f"*** [{datetime.datetime.now(tz)}] write to mysteel flashnews db ***\n"])
+#ssql = sqlite3.connect('/home/quantcargillmetals/FlashNewsSQL.db')
+
+db_path = 'C:/Users/x994664/OneDrive - Cargill Inc/Documents/FlashNewsSQL.db'
+ssql = sqlite3.connect(db_path)
 new_df['datetime'] = pd.to_datetime(new_df['datetime'])
 new_df.to_sql('MySteel_FlashNews',con = ssql,if_exists='append', index=False, method = None)
 ssql.close()
